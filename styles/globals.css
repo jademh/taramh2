@@ -14,3 +14,11 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.post {
+  width: 300px;
+  position: relative;
+}
+.post img {
+  width: 100%;
+}
