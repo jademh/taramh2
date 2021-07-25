@@ -6,9 +6,7 @@ const client = require('contentful').createClient({
   accessToken: accessToken,
 })
 
-export async function fetchContent() {
-  const entry = await client.getEntry('7MhAM9THkkKci0e0oIeYQa');
+export async function fetchContent(id) {
+  const entry = await client.getEntry(id);
   return entry;
 }
-
-export default { fetchContent }

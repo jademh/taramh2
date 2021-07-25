@@ -15,10 +15,10 @@ a {
   box-sizing: border-box;
 }
 
-.post {
-  width: 300px;
-  position: relative;
-}
-.post img {
-  width: 100%;
+hr:after {
+  content: "* * *";
+  font-size: 24px;
+  display: block;
+  text-align: center;
+  border: 0;
 }
