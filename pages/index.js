@@ -8,6 +8,31 @@ const Wrapper = styled.div`
   background: hotpink;
 `;
 
+const Background = styled.div`
+  background: #f5dcd2;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+  img {
+    max-width: calc(100% - 60px);
+    max-height: calc(100vh - 60px);
+    margin: 30px;
+  }
+`;
+
+const Images = styled.div`
+  margin: 102vh 0 0 0;
+  z-index: 2;
+  position: relative;
+`;
+
+const ImageElement = styled.div`
+  margin: 20vh 0;
+  text-align: center;
+`;
+
 export default function Home({cmsData, about, contact }) {
 
 
@@ -22,25 +47,28 @@ export default function Home({cmsData, about, contact }) {
       </Head>
    
       <img src={`${opengraphImage}?w=400`} alt="og image" />
-      <img src={`${heroImage}?w=400`} alt="hero image" />
+      <Background><img src={`${heroImage}?w=400`} alt="hero image" /></Background>
 
-      {cmsData.fields.imageList.map(image => {
-        const imagePath = image.fields.media.fields.file.url;
-        const imageSlug = image.fields.slug;
-        const imageHeight = image.fields.imageHeight;
-        const imageOffset = image.fields.imageOffset;
-        const imageTitle = image.fields.title;
-        const imageDescription = image.fields.longDescription;
-        return (
-        <div key={imageSlug} className="post">
-          <img src={`${imagePath}?w=400`} alt={imageTitle} />
-          <div>{imageTitle}</div>
-          {imageDescription &&
-          <p>{imageDescription}</p>
-          }
-          </div>
-        )
-      })}
+      <Images>
+        {cmsData.fields.imageList.map(image => {
+          const imagePath = image.fields.media.fields.file.url;
+          const imageSlug = image.fields.slug;
+          const imageHeight = image.fields.imageHeight;
+          const imageOffset = image.fields.imageOffset;
+          const imageTitle = image.fields.title;
+          const imageDescription = image.fields.longDescription;
+          console.log(imageHeight, imageOffset)
+          return (
+            <ImageElement key={imageSlug} className="post">
+              <img src={`${imagePath}?w=400`} alt={imageTitle} />
+              <div>{imageTitle}</div>
+              {imageDescription &&
+              <p>{imageDescription}</p>
+              }
+            </ImageElement>
+          )
+        })}
+      </Images>
 
       <h2>About</h2>
       {about.fields.contentModules.map(module => {
