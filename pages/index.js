@@ -1,109 +1,163 @@
 /* eslint-disable @next/next/no-img-element */
+import React, {useState, useEffect} from 'react'
 import Head from 'next/head'
-import styled from 'styled-components'
-import ReactMarkdown from 'react-markdown'
+import styled, {createGlobalStyle} from 'styled-components'
 import { fetchContent } from '../utils/contentful'
+import ImageList from '../components/ImageList'
+import DescriptionPanel from '../components/DescriptionPanel'
+import InfoPanel from '../components/InfoPanel'
+import trackEvent from '../utils/tracking'
+import theme from '../theme/theme'
 
-const Wrapper = styled.div`
-  background: hotpink;
+const GlobalStyle = createGlobalStyle`
+  body {
+    background: ${theme.base.colors.background};
+    color: ${theme.base.colors.copy};
+  }
+  p a {
+    color: ${theme.base.colors.copyLink};
+  }
+  p a:hover {
+    color: ${theme.base.colors.copyLinkHover};
+  }
+`
+const logoMargin = 30;
+
+const Nav = styled.div`
+  position: fixed;
+  bottom: 10px;
+  right: 15px;
+  z-index: 5;
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    top: 0;
+    width: 100%;
+    left: 0;
+    bottom: auto;
+    text-align: center;
+    padding: 5px 0 2px 0;
+    background: ${theme.base.colors.background};
+    border-bottom: 2px solid ${theme.base.colors.modalBorder};
+  }
 `;
 
-const Background = styled.div`
-  background: #f5dcd2;
+const NavButton = styled.button`
+  display: inline-block;
+  margin: 0 15px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: ${theme.base.colors.navLink};
+  font-size: ${theme.nav.fontSize};
+  /* might be a button, not always an <a> */
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 300ms ease-in-out;
+  &:hover {
+    color: ${theme.base.colors.navLinkHover};
+  };
+`;
+
+const PageWrapper = styled.div`
+  transition: 300ms padding ease-in-out;
+  @media (min-width: ${theme.breakpoints.mobile}) {
+    ${({modalOpen}) => modalOpen ? `padding-left: ${theme.imageInfoPanel.width};` : ``};
+  }
+`;
+
+const LogoWrap = styled.div`
+  background: ${theme.base.colors.background};
   position: fixed;
   top: 0;
   width: 100%;
   height: 100vh;
-  z-index: 1;
-  img {
-    max-width: calc(100% - 60px);
-    max-height: calc(100vh - 60px);
-    margin: 30px;
+  z-ndex: 1;
+`;
+
+const Logo = styled.img`
+  max-width: calc(100% - ${logoMargin * 2}px);
+  max-height: calc(100vh - ${logoMargin * 2}px);
+  margin: ${logoMargin}px;
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    margin-top: ${logoMargin + 26}px;
   }
-`;
-
-const Images = styled.div`
-  margin: 102vh 0 0 0;
-  z-index: 2;
-  position: relative;
-`;
-
-const ImageElement = styled.div`
-  margin: 20vh 0;
-  text-align: center;
 `;
 
 export default function Home({cmsData, about, contact }) {
 
+  const [descriptionPanelActive, setDescriptionPanelActive] = useState(false)
+  const [activeImage, setActiveImage] = useState({title: null, description: null})
+  const [aboutPanelActive, setAboutPanelActive] = useState(false)
+  const [contactPanelActive, setContactPanelActive] = useState(false)
+
+  const openDescriptionPanel = () => setDescriptionPanelActive(true)
+  const closeDescriptionPanel = () => setDescriptionPanelActive(false)
+  const openAboutPanel = () => {
+    trackEvent('Footer Info Link', 'Click', about.fields.title);
+    setAboutPanelActive(true)
+  }
+  const closeAboutPanel = () => setAboutPanelActive(false)
+  const openContactPanel = () => {
+    trackEvent('Footer Info Link', 'Click', contact.fields.title);
+    setContactPanelActive(true)
+  }
+  const closeContactPanel = () => setContactPanelActive(false)
+
+  let descriptionPanelAnimationTimeout;
+
+  const handleImageClick = ({title, description}) => {
+    if(descriptionPanelActive) {
+      closeDescriptionPanel();
+      descriptionPanelAnimationTimeout = setTimeout(() => {
+        trackEvent('Portfolio Image', 'Click', title);
+        setActiveImage({title, description})
+        openDescriptionPanel()
+      }, theme.imageInfoPanel.transitionTime)
+      
+    }
+    else {
+      trackEvent('Portfolio Image', 'Click', title);
+      setActiveImage({title, description})
+      openDescriptionPanel(true)
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      if(descriptionPanelAnimationTimeout) {
+        clearTimeout(descriptionPanelAnimationTimeout)
+      }
+    };
+  }, []);
 
   const opengraphImage = cmsData.fields.opengraphImage.fields.file.url;
   const heroImage = cmsData.fields.heroImage.fields.file.url;
+
   return (
-    <Wrapper>
-      <Head>
-        <title>{cmsData.fields.pageTitle}</title>
-        <meta name="description" content={cmsData.fields.pageDescription} />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-   
-      <img src={`${opengraphImage}?w=400`} alt="og image" />
-      <Background><img src={`${heroImage}?w=400`} alt="hero image" /></Background>
 
-      <Images>
-        {cmsData.fields.imageList.map(image => {
-          const imagePath = image.fields.media.fields.file.url;
-          const imageSlug = image.fields.slug;
-          const imageHeight = image.fields.imageHeight;
-          const imageOffset = image.fields.imageOffset;
-          const imageTitle = image.fields.title;
-          const imageDescription = image.fields.longDescription;
-          console.log(imageHeight, imageOffset)
-          return (
-            <ImageElement key={imageSlug} className="post">
-              <img src={`${imagePath}?w=400`} alt={imageTitle} />
-              <div>{imageTitle}</div>
-              {imageDescription &&
-              <p>{imageDescription}</p>
-              }
-            </ImageElement>
-          )
-        })}
-      </Images>
-
-      <h2>About</h2>
-      {about.fields.contentModules.map(module => {
-        const contentType = module.sys.contentType.sys.id;
-        return(
-          <div key={module.sys.id}>
-              {contentType === "text" &&
-                <ReactMarkdown>{module.fields.text}</ReactMarkdown>
-              }
-              {contentType === "button" &&
-                <a href={module.fields.buttonLink}>{module.fields.buttonText}</a>
-              }
-          </div>
-        )
-      })}
-
-      <h2>Contact</h2>
-      {contact.fields.contentModules.map(module => {
-        const contentType = module.sys.contentType.sys.id;
-        return(
-          <div key={module.sys.id}>
-              {contentType === "text" &&
-                <ReactMarkdown>{module.fields.text}</ReactMarkdown>
-              }
-              {contentType === "button" &&
-                <a href={module.fields.buttonLink}>{module.fields.buttonText}</a>
-              }
-               {contentType === "credit" &&
-                <ReactMarkdown>{module.fields.credit}</ReactMarkdown>
-              }
-          </div>
-        )
-      })}
-
-    </Wrapper>
+  <>
+    <Head>
+      <title>{cmsData.fields.pageTitle}</title>
+      <meta name="description" content={cmsData.fields.pageDescription} />
+      <meta property="og:image" content={`${opengraphImage}?w=800`} />
+      <link rel="icon" href="/favicon.png" />
+    </Head>
+    <GlobalStyle />
+    <div>
+      <Nav>
+        <NavButton onClick={openAboutPanel}>About</NavButton>
+        <NavButton onClick={openContactPanel}>Contact</NavButton>
+      </Nav>
+    <PageWrapper modalOpen={descriptionPanelActive}>
+      <LogoWrap>
+        <Logo src={`${heroImage}?w=1600`} alt="hero image" />
+      </LogoWrap>
+      <ImageList images={cmsData.fields.imageList} onImageClick={handleImageClick} />
+      <DescriptionPanel active={descriptionPanelActive} title={activeImage.title} description={activeImage.description} onClose={closeDescriptionPanel} />
+      <InfoPanel active={aboutPanelActive} fields={about.fields} onClose={closeAboutPanel} />
+      <InfoPanel active={contactPanelActive} fields={contact.fields} onClose={closeContactPanel} />
+    </PageWrapper>
+    </div>
+  </>
   )
 }
 

@@ -1,19 +1,10 @@
-html,
 body {
-  padding: 0;
+  font-family: "Authentic", "Helvetica", "Arial", sans-serif;
+  font-size: 15px;
+  line-height: 25px;
+  -webkit-font-smoothing: antialiased;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
-
-body {
-  background: #f5dcd2;
-  color: red;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
+  padding: 0;
 }
 
 * {
@@ -21,7 +12,7 @@ a {
 }
 
 hr {
-  border: 0;
+  border-width: 0;
 }
 
 hr:after {
@@ -29,4 +20,47 @@ hr:after {
   font-size: 24px;
   display: block;
   text-align: center;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Buffon", "Times New Roman", "Times", serif;
+  text-transform: uppercase;
+}
+
+p a {
+  transition: color 300ms ease-in-out;
+}
+
+button {
+  font-family: "Authentic", "Helvetica", "Arial", sans-serif;
+}
+
+a:active,
+button:active {
+  outline: none;
+}
+
+@font-face {
+  font-family: "Authentic";
+  src: url("../public/fonts/AUTHENTIC-Sans.woff2") format("woff2"),
+    url("../public/fonts/AUTHENTIC-Sans.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Buffon";
+  src: url("../public/fonts/Buffon-Thin.woff2") format("woff2"),
+    url("../public/fonts/Buffon-Thin.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+}
+
+abbr {
+  text-decoration: none;
 }
