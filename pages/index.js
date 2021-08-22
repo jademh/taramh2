@@ -161,7 +161,7 @@ export default function Home({cmsData, about, contact }) {
       </Nav>
     <PageWrapper modalOpen={descriptionPanelActive}>
       <LogoWrap>
-        <Logo src={`${heroImage}?w=1600`} alt="hero image" />
+        <Logo src={`${heroImage}?w=1912`} alt="hero image" />
       </LogoWrap>
       <ImageList images={cmsData.fields.imageList} onImageClick={handleImageClick} />
       <DescriptionPanel active={descriptionPanelActive} title={activeImage.title} description={activeImage.description} onClose={closeDescriptionPanel} />
