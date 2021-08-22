@@ -1,5 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 import styled, {createGlobalStyle} from 'styled-components'
 import theme from '../theme/theme'
 
@@ -33,7 +34,7 @@ export default function Custom404() {
     </Head>
             <GlobalStyle />
             <h1>404 - Page not Found</h1>
-            <p>That page doesn't exist... try <a href="/">here</a>.</p>
+            <p>That page does not exist... try <Link href="/">here</Link>.</p>
         </PageWrapper>
     )
 }

@@ -79,9 +79,9 @@ const ImageElementImage = styled.img`
 `;
 
 
-const ImageElement = ({imagePath, imageTitle, imageDescription, imageHeight, onImageClick}) => {
+const ImageElement = ({imageId, imagePath, imageTitle, imageDescription, imageHeight, onImageClick}) => {
     const handleClick = () => {
-        onImageClick({title: imageTitle, description: imageDescription})
+        onImageClick({id: imageId, title: imageTitle, description: imageDescription})
     }
     return (
         <ImageElementWrap as={imageDescription? `button` : `div`} onClick={imageDescription ? handleClick : null}>
@@ -95,14 +95,14 @@ export default function ImageList({images, onImageClick}) {
         <Images>
           {images.map(image => {
             const imagePath = image.fields.media.fields.file.url;
-            const imageSlug = image.fields.slug;
+            const imageId = image.sys.id
             const imageHeight = image.fields.imageHeight;
             const imageOffset = image.fields.imageOffset;
             const imageTitle = image.fields.title;
             const imageDescription = image.fields.longDescription;
             return (
-              <ImageWrap key={imageSlug} imageOffset={imageOffset}>
-                <ImageElement imagePath={imagePath} imageTitle={imageTitle} imageDescription={imageDescription} imageHeight={imageHeight} onImageClick={onImageClick} />
+              <ImageWrap key={imageId} imageOffset={imageOffset}>
+                <ImageElement imageId={imageId} imagePath={imagePath} imageTitle={imageTitle} imageDescription={imageDescription} imageHeight={imageHeight} onImageClick={onImageClick} />
               </ImageWrap>
             )
           })}

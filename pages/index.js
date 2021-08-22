@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import React, {useState, useEffect} from 'react'
 import Head from 'next/head'
@@ -85,12 +86,15 @@ const Logo = styled.img`
 export default function Home({cmsData, about, contact }) {
 
   const [descriptionPanelActive, setDescriptionPanelActive] = useState(false)
-  const [activeImage, setActiveImage] = useState({title: null, description: null})
+  const [activeImage, setActiveImage] = useState({id: null, title: null, description: null})
   const [aboutPanelActive, setAboutPanelActive] = useState(false)
   const [contactPanelActive, setContactPanelActive] = useState(false)
 
   const openDescriptionPanel = () => setDescriptionPanelActive(true)
-  const closeDescriptionPanel = () => setDescriptionPanelActive(false)
+  const closeDescriptionPanel = () => {
+    setDescriptionPanelActive(false);
+    setActiveImage({id: null, title: null, description: null});
+  }
   const openAboutPanel = () => {
     trackEvent('Footer Info Link', 'Click', about.fields.title);
     setAboutPanelActive(true)
@@ -104,20 +108,28 @@ export default function Home({cmsData, about, contact }) {
 
   let descriptionPanelAnimationTimeout;
 
-  const handleImageClick = ({title, description}) => {
-    if(descriptionPanelActive) {
+  const handleImageClick = ({id, title, description}) => {
+    // if they click on the active image, close the panel
+    if(activeImage.id === id) {
       closeDescriptionPanel();
-      descriptionPanelAnimationTimeout = setTimeout(() => {
-        trackEvent('Portfolio Image', 'Click', title);
-        setActiveImage({title, description})
-        openDescriptionPanel()
-      }, theme.imageInfoPanel.transitionTime)
-      
     }
     else {
-      trackEvent('Portfolio Image', 'Click', title);
-      setActiveImage({title, description})
-      openDescriptionPanel(true)
+      // if they click on an image while the panel is open, close it and then open it again
+      if(descriptionPanelActive) {
+        closeDescriptionPanel();
+        descriptionPanelAnimationTimeout = setTimeout(() => {
+          trackEvent('Portfolio Image', 'Click', title);
+          setActiveImage({id, title, description})
+          openDescriptionPanel()
+        }, theme.imageInfoPanel.transitionTime)
+        
+      }
+      // if they click on an image and there is no active image, open it
+      else {
+        trackEvent('Portfolio Image', 'Click', title);
+        setActiveImage({id, title, description})
+        openDescriptionPanel(true)
+      }
     }
   }
 
