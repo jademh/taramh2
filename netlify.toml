@@ -1,0 +1,37 @@
+[[redirects]]
+  from = "https://taramh.netlify.com/*"
+  to = "https://www.taramh.com/:splat"
+  status = 301
+  force = true
+  
+[[redirects]]
+  from = "http://www.taramh.com/3196514-happy-meals"
+  to = "https://www.taramh.com"
+
+[[redirects]]
+  from = "https://www.taramh.com/3196514-happy-meals"
+  to = "https://www.taramh.com"
+
+[[redirects]]
+  from = "http://www.taramh.com/3196512-pvc"
+  to = "https://www.taramh.com"
+
+[[redirects]]
+  from = "https://www.taramh.com/3196512-pvc"
+  to = "https://www.taramh.com"
+
+[[redirects]]
+  from = "http://www.taramh.com/gal_garb"
+  to = "https://www.taramh.com"
+
+[[redirects]]
+  from = "https://www.taramh.com/gal_garb"
+  to = "https://www.taramh.com"
+
+[[redirects]]
+  from = "http://www.taramh.com/untitled-gallery"
+  to = "https://www.taramh.com"
+
+[[redirects]]
+  from = "https://www.taramh.com/untitled-gallery"
+  to = "https://www.taramh.com"
